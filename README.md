@@ -1,1 +1,1 @@
-# spinner-release-reminder
+# spinner-scheduler
