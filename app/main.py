@@ -32,6 +32,7 @@ def create_release_reminders(
 
 
 @app.post("/release-reminder-receivers/create-scheduled-spinners")
-def create_scheduled_spinners(request: Request):
-    logger.info(request.json())
+async def create_scheduled_spinners(request: Request):
+    data = await request.json()
+    logger.info(data)
     return {"message": "Hello World"}
