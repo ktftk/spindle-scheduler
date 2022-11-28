@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
 from psycopg2._psycopg import connection
 
 from .domains import ReleaseReminder
@@ -32,6 +32,7 @@ def create_release_reminders(
 
 
 @app.post("/release-reminder-receivers/create-scheduled-spinners")
-def create_scheduled_spinners(message):
-    logger.info(message)
-    return message
+def create_scheduled_spinners(request: Request):
+    logger.info(request)
+    logger.info(request.body())
+    return {"message": "Hello World"}
