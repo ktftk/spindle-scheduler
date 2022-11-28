@@ -33,6 +33,5 @@ def create_release_reminders(
 
 @app.post("/release-reminder-receivers/create-scheduled-spinners")
 def create_scheduled_spinners(request: Request):
-    logger.info(request)
-    logger.info(request.body())
+    logger.info(request.json())
     return {"message": "Hello World"}
