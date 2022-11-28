@@ -16,9 +16,9 @@ DB_HOST = os.environ.get("DB_HOST")
 
 DB_PORT = os.environ.get("DB_PORT")
 
-PUBSUB_PROJECT_ID = os.environ["PUBSUB_PROJECT_ID"]
+PUBSUB_PROJECT_ID = os.environ.get("PUBSUB_PROJECT_ID")
 
-PUBSUB_TOPIC_ID = os.environ["PUBSUB_TOPIC_ID"]
+PUBSUB_TOPIC_ID = os.environ.get("PUBSUB_TOPIC_ID")
 
 REMINDER_ADVANCE_TIME = 60 * 60
 
