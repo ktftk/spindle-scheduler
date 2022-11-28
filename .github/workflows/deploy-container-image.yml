@@ -36,3 +36,4 @@ jobs:
         with:
           image: asia.gcr.io/logos-369708/spinner-scheduler:latest
           service: "spinner-scheduler"
+          region: "asia-northeast1"
