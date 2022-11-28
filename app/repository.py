@@ -10,6 +10,7 @@ from .config import (
     DB_PASSWORD,
     DB_PORT,
     DB_USER,
+    INSTANCE_UNIX_SOCKET,
     REMINDER_ADVANCE_TIME,
     REMINDER_DEADLINE_TIME,
 )
@@ -17,6 +18,13 @@ from .domains import Release
 
 
 def get_conn() -> connection:
+    if INSTANCE_UNIX_SOCKET is not None:
+        return psycopg2.connect(
+            dbname=DB_DBNAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=INSTANCE_UNIX_SOCKET,
+        )
     return psycopg2.connect(
         dbname=DB_DBNAME,
         user=DB_USER,

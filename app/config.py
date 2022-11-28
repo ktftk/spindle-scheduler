@@ -4,15 +4,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+INSTANCE_UNIX_SOCKET = os.environ.get("INSTANCE_UNIX_SOCKET")
+
 DB_DBNAME = os.environ["DB_DBNAME"]
 
 DB_USER = os.environ["DB_USER"]
 
 DB_PASSWORD = os.environ["DB_PASSWORD"]
 
-DB_HOST = os.environ.get("DB_HOST", os.environ["INSTANCE_UNIX_SOCKET"])
+DB_HOST = os.environ.get("DB_HOST")
 
-DB_PORT = os.environ["DB_PORT"]
+DB_PORT = os.environ.get("DB_PORT")
 
 PUBSUB_PROJECT_ID = os.environ["PUBSUB_PROJECT_ID"]
 
