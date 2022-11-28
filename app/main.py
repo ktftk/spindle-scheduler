@@ -1,4 +1,3 @@
-import json
 import logging
 from typing import Optional
 
@@ -27,7 +26,7 @@ def create_release_reminders(
     if topic_path is not None:
         for release_reminder in release_reminders:
             publisher.publish(
-                topic_path, json.dumps(release_reminder.dict()).encode("utf-8")
+                topic_path, release_reminder.json().encode("utf-8")
             )
     return release_reminders
 
