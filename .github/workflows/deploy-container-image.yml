@@ -30,3 +30,9 @@ jobs:
 
       - name: Push Docker Image
         run: docker push asia.gcr.io/logos-369708/spinner-scheduler:latest
+
+      - name: "Deploy to Cloud Run"
+        uses: "google-github-actions/deploy-cloudrun@v0"
+        with:
+          image: asia.gcr.io/logos-369708/spinner-scheduler:latest
+          service: "spinner-scheduler"
