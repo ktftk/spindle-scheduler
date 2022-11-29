@@ -5,9 +5,9 @@ from typing import Optional
 from fastapi import Body, Depends, FastAPI
 from psycopg2._psycopg import connection
 
-from .domains import PubSubMessage, ReleaseReminder
-from .publisher import get_topic_path, publisher
-from .repository import get_conn, read_releases_to_remind
+from spinner_schduler.domains import PubSubMessage, ReleaseReminder
+from spinner_schduler.publisher import get_topic_path, publisher
+from spinner_schduler.repository import get_conn, read_releases_to_remind
 
 logger = logging.getLogger("uvicorn")
 logger.setLevel(logging.DEBUG)
@@ -37,6 +37,4 @@ async def create_scheduled_spinners(message: PubSubMessage = Body(embed=True)):
     release_reminder = ReleaseReminder.parse_raw(
         base64.b64decode(message.data)
     )
-    logger.info(release_reminder)
-    logger.info(release_reminder.json())
     return {"message": "Hello World"}
