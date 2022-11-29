@@ -1,11 +1,11 @@
 FROM python:3.11
 
+ENV PROJECT spinner_schduler
+
 WORKDIR /code
 
-COPY ./requirements.txt /code/requirements.txt
+COPY . /code
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN pip install -r /code/requirements.txt --no-cache-dir /code
 
-COPY ./app /code/app
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "${PROJECT}.app.main:app", "--host", "0.0.0.0", "--port", "8080"]
