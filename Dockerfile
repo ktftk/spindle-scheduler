@@ -1,6 +1,6 @@
 FROM python:3.11
 
-ENV PROJECT spinner_schduler
+ENV PROJECT spinner_scheduler
 
 WORKDIR /code
 

@@ -5,9 +5,9 @@ from typing import Optional
 from fastapi import Body, Depends, FastAPI
 from psycopg2._psycopg import connection
 
-from spinner_schduler.domains import PubSubMessage, ReleaseReminder
-from spinner_schduler.publisher import get_topic_path, publisher
-from spinner_schduler.repository import get_conn, read_releases_to_remind
+from spinner_scheduler.domains import PubSubMessage, ReleaseReminder
+from spinner_scheduler.publisher import get_topic_path, publisher
+from spinner_scheduler.repository import get_conn, read_releases_to_remind
 
 logger = logging.getLogger("uvicorn")
 logger.setLevel(logging.DEBUG)
