@@ -20,3 +20,9 @@ class ReleaseReminder(BaseModel):
     created_at: datetime.datetime = Field(
         default_factory=datetime.datetime.utcnow
     )
+
+
+class PubSubMessage(BaseModel):
+    data: str
+    message_id: str
+    publish_time: str

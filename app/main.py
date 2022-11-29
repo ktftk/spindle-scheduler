@@ -1,10 +1,11 @@
+import base64
 import logging
 from typing import Optional
 
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI
 from psycopg2._psycopg import connection
 
-from .domains import ReleaseReminder
+from .domains import PubSubMessage, ReleaseReminder
 from .publisher import get_topic_path, publisher
 from .repository import get_conn, read_releases_to_remind
 
@@ -32,7 +33,10 @@ def create_release_reminders(
 
 
 @app.post("/release-reminder-receivers/create-scheduled-spinners")
-async def create_scheduled_spinners(request: Request):
-    data = await request.json()
-    logger.info(data)
+async def create_scheduled_spinners(message: PubSubMessage):
+    release_reminder = ReleaseReminder.parse_raw(
+        base64.b64decode(message.data)
+    )
+    logger.info(release_reminder)
+    logger.info(release_reminder.json())
     return {"message": "Hello World"}
