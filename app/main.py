@@ -2,7 +2,7 @@ import base64
 import logging
 from typing import Optional
 
-from fastapi import Depends, FastAPI
+from fastapi import Body, Depends, FastAPI
 from psycopg2._psycopg import connection
 
 from .domains import PubSubMessage, ReleaseReminder
@@ -33,7 +33,7 @@ def create_release_reminders(
 
 
 @app.post("/release-reminder-receivers/create-scheduled-spinners")
-async def create_scheduled_spinners(message: PubSubMessage):
+async def create_scheduled_spinners(message: PubSubMessage = Body(embed=True)):
     release_reminder = ReleaseReminder.parse_raw(
         base64.b64decode(message.data)
     )
