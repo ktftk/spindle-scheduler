@@ -6,6 +6,6 @@ WORKDIR /code
 
 COPY . /code
 
-RUN pip install -r /code/requirements.txt --no-cache-dir /code
+RUN pip install -r /code/requirements.txt -e --no-cache-dir /code
 
 CMD ["uvicorn", "${PROJECT}.app.main:app", "--host", "0.0.0.0", "--port", "8080"]
