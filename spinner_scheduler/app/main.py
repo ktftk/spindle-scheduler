@@ -2,12 +2,15 @@ import base64
 import logging
 from typing import Optional
 
-from fastapi import Body, Depends, FastAPI
+from fastapi import Body, Depends, FastAPI, status
+from fastapi.responses import JSONResponse
+from google.cloud import tasks_v2
 from psycopg2._psycopg import connection
 
 from spinner_scheduler.domains import PubSubMessage, ReleaseReminder
 from spinner_scheduler.publisher import get_topic_path, publisher
 from spinner_scheduler.repository import get_conn, read_releases_to_remind
+from spinner_scheduler.tasks import scraping
 
 logger = logging.getLogger("uvicorn")
 logger.setLevel(logging.DEBUG)
@@ -32,9 +35,21 @@ def create_release_reminders(
     return release_reminders
 
 
-@app.post("/release-reminder-receivers/create-scheduled-spinners")
-async def create_scheduled_spinners(message: PubSubMessage = Body(embed=True)):
+@app.post("/release-reminder-receivers/create-scraping-tasks")
+async def create_scraping_tasks(
+    message: PubSubMessage = Body(embed=True),
+    client: tasks_v2.CloudTasksClient = Depends(tasks_v2.CloudTasksClient),
+):
     release_reminder = ReleaseReminder.parse_raw(
         base64.b64decode(message.data)
     )
-    return {"message": "Hello World"}
+    receiver = scraping.get_receiver(release_reminder.release.group_code)
+    tasks = receiver.run(release=release_reminder.release)
+    gcp_tasks = []
+    for task in tasks:
+        gcp_task = scraping.create_gcp_task(client, task)
+        gcp_tasks.append(gcp_task)
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content={"tasks": tasks},
+    )
