@@ -21,7 +21,7 @@ def create_gcp_task(
         "url": GCP_SPINDLE_CLOUD_RUN_URL,
         "http_method": tasks_v2.HttpMethod.POST,
         "headers": {"Content-type": "application/json"},
-        "body": task.json(include={"name", "inputs"}).encode(),
+        "body": task.json(include={"name", "inputs", "metadata"}).encode(),
         "oidc_token": {
             "service_account_email": GCP_SPINDLE_INVOKE_SERVICE_ACCOUNT,
             "audience": GCP_SPINDLE_CLOUD_RUN_URL,
