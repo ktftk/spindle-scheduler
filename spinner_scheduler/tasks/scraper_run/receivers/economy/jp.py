@@ -1,5 +1,5 @@
 from spinner_scheduler import Release
-from spinner_scheduler.tasks.scraping import (
+from spinner_scheduler.tasks.scraper_run import (
     ReleaseReceiverBase,
     ScraperRunTask,
 )
