@@ -35,7 +35,10 @@ def create_release_reminders(
     return release_reminders
 
 
-@app.post("/release-reminder-receivers/create-scraping-tasks")
+@app.post(
+    "/release-reminder-receivers/create-scraping-tasks",
+    response_model=list[scraping.ScraperRunTask],
+)
 async def create_scraping_tasks(
     message: PubSubMessage = Body(embed=True),
     client: tasks_v2.CloudTasksClient = Depends(tasks_v2.CloudTasksClient),
