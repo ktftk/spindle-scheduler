@@ -1,12 +1,17 @@
 from psycopg import Cursor
 
+from spindle_scheduler.domains import ContextLoad
+
+from .. import repository
 from ..domains import Release
-from ..repositories import DestinationRepository, SourceRepository
+from .parse_release import parse_release
 
 
-def load_releases(cursor: Cursor) -> list[Release]:
-    source_repository = SourceRepository()
-    raw_releases = source_repository.read_releases()
-    destination_repository = DestinationRepository(cursor)
-    releases = destination_repository.create_releases(raw_releases)
+def load_releases(cursor: Cursor, context_load: ContextLoad) -> list[Release]:
+    raw_releases = repository.read_releases()
+    releases = [
+        parse_release(raw_release, context_load)
+        for raw_release in raw_releases
+    ]
+    repository.create_releases(cursor, releases)
     return releases
