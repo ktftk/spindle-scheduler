@@ -6,6 +6,10 @@ load_dotenv()
 
 INSTANCE_UNIX_SOCKET = os.environ.get("INSTANCE_UNIX_SOCKET")
 
+DB_URL = os.environ["DB_URL"]
+
+DB_SCHEMA = os.environ["DB_SCHEMA"]
+
 DB_DBNAME = os.environ["DB_DBNAME"]
 
 DB_USER = os.environ["DB_USER"]
