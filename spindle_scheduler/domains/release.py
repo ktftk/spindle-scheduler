@@ -3,6 +3,8 @@ import uuid
 
 from pydantic import BaseModel
 
+from .context_load import ContextLoad
+
 
 class Release(BaseModel):
     hash: str
@@ -12,3 +14,4 @@ class Release(BaseModel):
     frequency: str
     edition: datetime.date
     scheduled_datetime: datetime.datetime
+    context_load: ContextLoad
