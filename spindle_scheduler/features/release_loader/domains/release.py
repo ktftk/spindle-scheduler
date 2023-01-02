@@ -11,13 +11,3 @@ class RawRelease(BaseModel):
     frequency: str
     edition: datetime.date
     scheduled_datetime: datetime.datetime
-
-
-class Release(BaseModel):
-    hash: str
-    id: uuid.UUID
-    group_code: str
-    dataset_code: str
-    frequency: str
-    edition: datetime.date
-    scheduled_datetime: datetime.datetime

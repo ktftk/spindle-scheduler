@@ -8,6 +8,3 @@ from ..infra.local_resource import read_releases
 class SourceRepository:
     def read_releases(self) -> list[RawRelease]:
         return read_releases()
-
-
-source_repository = SourceRepository()
