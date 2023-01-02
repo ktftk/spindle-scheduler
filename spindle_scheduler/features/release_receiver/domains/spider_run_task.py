@@ -3,7 +3,7 @@ import uuid
 
 from pydantic import BaseModel, Field
 
-from .release import Release
+from spindle_scheduler.domains import Release
 
 
 class SpiderRunTask(BaseModel):
@@ -12,4 +12,4 @@ class SpiderRunTask(BaseModel):
     spider_inputs: dict
     scheduled_datetime: datetime.datetime
     metadata: dict = Field(default_factory=dict)
-    received_release: Release
+    trigger_release: Release
