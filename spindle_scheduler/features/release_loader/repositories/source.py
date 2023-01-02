@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from ..domains import RawRelease
-from ..infra.local import read_releases
+from ..infra.local_resource import read_releases
 
 
 @dataclass
