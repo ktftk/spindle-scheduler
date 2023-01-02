@@ -7,10 +7,10 @@ from fastapi.responses import JSONResponse
 from google.cloud import tasks_v2
 from psycopg2._psycopg import connection
 
-from spinner_scheduler.domains import PubSubMessage, ReleaseReminder
-from spinner_scheduler.publisher import get_topic_path, publisher
-from spinner_scheduler.repository import get_conn, read_releases_to_remind
-from spinner_scheduler.tasks import scraper_run
+from spindle_scheduler.domains import PubSubMessage, ReleaseReminder
+from spindle_scheduler.publisher import get_topic_path, publisher
+from spindle_scheduler.repository import get_conn, read_releases_to_remind
+from spindle_scheduler.tasks import scraper_run
 
 logger = logging.getLogger("uvicorn")
 logger.setLevel(logging.DEBUG)

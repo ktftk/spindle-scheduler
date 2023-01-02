@@ -4,7 +4,7 @@ import uuid
 
 from pydantic import BaseModel, Field
 
-from spinner_scheduler import Release
+from spindle_scheduler import Release
 
 
 class ScraperRunTask(BaseModel):

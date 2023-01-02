@@ -1,7 +1,7 @@
 from google.cloud import tasks_v2
 from google.protobuf import duration_pb2
 
-from spinner_scheduler.config import (
+from spindle_scheduler.config import (
     GCP_PROJECT_ID,
     GCP_SCRAPING_CLOUD_TASKS_LOCATION,
     GCP_SCRAPING_CLOUD_TASKS_QUEUE_NAME,
