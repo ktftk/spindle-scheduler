@@ -9,19 +9,21 @@ from spinner_scheduler.config import (
     GCP_SPINDLE_INVOKE_SERVICE_ACCOUNT,
 )
 
-from .domains import ScrapingTask
+from .domains import ScraperRunTask
 
 DEADLINE = 900
 
 
 def create_gcp_task(
-    client: tasks_v2.CloudTasksClient, task: ScrapingTask
+    client: tasks_v2.CloudTasksClient, task: ScraperRunTask
 ) -> tasks_v2.Task:
     http_request = {
         "url": GCP_SPINDLE_CLOUD_RUN_URL,
         "http_method": tasks_v2.HttpMethod.POST,
         "headers": {"Content-type": "application/json"},
-        "body": task.json(include={"name", "inputs", "metadata"}).encode(),
+        "body": task.json(
+            include={"scraper_name", "scraper_inputs", "scraper_run_id"}
+        ).encode(),
         "oidc_token": {
             "service_account_email": GCP_SPINDLE_INVOKE_SERVICE_ACCOUNT,
             "audience": GCP_SPINDLE_CLOUD_RUN_URL,
