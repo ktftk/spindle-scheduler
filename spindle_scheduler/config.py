@@ -1,46 +1,11 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent.parent)
 
-INSTANCE_UNIX_SOCKET = os.environ.get("INSTANCE_UNIX_SOCKET")
 
 DB_URL = os.environ["DB_URL"]
 
 DB_SCHEMA = os.environ["DB_SCHEMA"]
-
-DB_DBNAME = os.environ["DB_DBNAME"]
-
-DB_USER = os.environ["DB_USER"]
-
-DB_PASSWORD = os.environ["DB_PASSWORD"]
-
-DB_HOST = os.environ.get("DB_HOST")
-
-DB_PORT = os.environ.get("DB_PORT")
-
-GCP_PROJECT_ID = os.environ["GCP_PROJECT_ID"]
-
-PUBSUB_PROJECT_ID = os.environ.get("PUBSUB_PROJECT_ID")
-
-PUBSUB_TOPIC_ID = os.environ.get("PUBSUB_TOPIC_ID")
-
-GCP_SCRAPING_CLOUD_TASKS_LOCATION = os.environ[
-    "GCP_SCRAPING_CLOUD_TASKS_LOCATION"
-]
-
-GCP_SCRAPING_CLOUD_TASKS_QUEUE_NAME = os.environ[
-    "GCP_SCRAPING_CLOUD_TASKS_QUEUE_NAME"
-]
-
-GCP_SPINDLE_CLOUD_RUN_URL = os.environ["GCP_SPINDLE_CLOUD_RUN_URL"]
-
-GCP_SPINDLE_INVOKE_SERVICE_ACCOUNT = os.environ[
-    "GCP_SPINDLE_INVOKE_SERVICE_ACCOUNT"
-]
-
-
-REMINDER_ADVANCE_TIME = 60 * 60
-
-REMINDER_DEADLINE_TIME = 60 * 60 * 24 * 30
