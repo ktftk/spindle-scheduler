@@ -1,0 +1,32 @@
+name: Load Resources
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cloud SQL Proxy
+        run: |
+          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+          chmod +x cloud_sql_proxy
+          echo '${{ secrets.CLOUD_SQL_PROXY_SA_KEY }}' > ./cloud-sql-proxy-sa-key.json
+          ./cloud_sql_proxy -instances=${{ secrets.CLOUD_SQL_CONNECTION_NAME }}=tcp:5432  \
+              -credential_file=./cloud-sql-proxy-sa-key.json &
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.11"
+      - name: pip install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Run Python
+        env:
+          DB_URL: "${{ secrets.DB_URL }}"
+          DB_SCHEMA: "${{ secrets.DB_SCHEMA }}"
+        run: python ./scripts/load_resources.py
