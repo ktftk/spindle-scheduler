@@ -1,4 +1,4 @@
-from typing import ClassVar
+from typing import ClassVar, TypeVar
 
 from psycopg import Cursor, sql
 from pydantic import BaseModel, PrivateAttr
@@ -21,7 +21,10 @@ class RecordBase(BaseModel):
         return tuple(self.dict().values())
 
 
-def crete(cursor: Cursor, record: RecordBase) -> RecordBase:
+T = TypeVar("T", bound=RecordBase)
+
+
+def crete(cursor: Cursor, record: T) -> T:
     cursor.execute(
         sql.SQL("INSERT INTO {} ({}) VALUES ({})").format(
             sql.Identifier(record.get_schema(), record.get_tablename()),
@@ -35,7 +38,7 @@ def crete(cursor: Cursor, record: RecordBase) -> RecordBase:
     return record
 
 
-def create_many(cursor: Cursor, records: list[RecordBase]) -> list[RecordBase]:
+def create_many(cursor: Cursor, records: list[T]) -> list[T]:
     if len(records) == 0:
         return []
     schema = records[0].get_schema()
