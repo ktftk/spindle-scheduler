@@ -2,7 +2,7 @@ from ..domains import Release, SpiderRunTask
 
 
 def create_spider_run_tasks(release: Release) -> list[SpiderRunTask]:
-    if release.group_code == "economy.us.cpi":
+    if release.group_code == "economy.us.cpi.main":
         return [
             SpiderRunTask(
                 spider_name="topics.economy.us.cpi.cpiu",
