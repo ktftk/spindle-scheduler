@@ -17,6 +17,7 @@ class SpiderRunTask(RecordBase):
     _tablename = "spider_run_task"
     id: uuid.UUID
     spider_name: str
+    spider_inputs: str
     scheduled_datetime: datetime.datetime
     metadata: str
 
@@ -25,6 +26,9 @@ class SpiderRunTask(RecordBase):
         return cls(
             id=spider_run_task.id,
             spider_name=spider_run_task.spider_name,
+            spider_inputs=json.dumps(
+                json.loads(spider_run_task.json())["spider_inputs"]
+            ),
             scheduled_datetime=spider_run_task.scheduled_datetime,
             metadata=json.dumps(spider_run_task.metadata),
         )
