@@ -33,7 +33,7 @@ def crete(cursor: Cursor, record: T) -> T:
                 sql.Placeholder() * len(record.get_fieldnames())
             ),
         ),
-        [record.get_values()],
+        [*record.get_values()],
     )
     return record
 

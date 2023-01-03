@@ -13,7 +13,7 @@ from .helper import RecordBase, crete
 
 class ContextLoad(RecordBase):
     _schema = DB_SCHEMA
-    _tablename = "contect_load"
+    _tablename = "context_load"
     id: uuid.UUID
     created_at: datetime.datetime
 
