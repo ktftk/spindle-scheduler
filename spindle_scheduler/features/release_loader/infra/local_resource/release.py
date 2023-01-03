@@ -3,6 +3,8 @@ import datetime
 import pandera as pa
 from pandera.typing import Series
 
+from spindle_scheduler.utils import datetime_from_timestamp
+
 from ...config import RELEASE_RESOURCE_PATH
 from ...domains import RawRelease
 from .utils import read_csv
@@ -42,6 +44,6 @@ def read_releases() -> list[RawRelease]:
     )
     df = df.astype({"scheduled_timestamp": int})
     df["scheduled_datetime"] = df["scheduled_timestamp"].apply(
-        datetime.datetime.fromtimestamp
+        datetime_from_timestamp
     )
     return [RawRelease.parse_obj(record) for record in df.to_dict("records")]
