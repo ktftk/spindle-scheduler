@@ -17,8 +17,8 @@ class RecordBase(BaseModel):
     def get_fieldnames(self) -> list[str]:
         return list(self.dict().keys())
 
-    def get_values(self) -> tuple:
-        return tuple(self.dict().values())
+    def get_values(self) -> list:
+        return list(self.dict().values())
 
 
 T = TypeVar("T", bound=RecordBase)
@@ -44,11 +44,11 @@ def create_many(cursor: Cursor, records: list[T]) -> list[T]:
     schema = records[0].get_schema()
     tablename = records[0].get_tablename()
     record_type = type(records[0])
-    fieldnamess = records[0].get_fieldnames()
+    fieldnames = records[0].get_fieldnames()
     with cursor.copy(
         sql.SQL("COPY {} ({}) FROM STDOUT").format(
             sql.Identifier(schema, tablename),
-            sql.SQL(", ").join(map(sql.Identifier, fieldnamess)),
+            sql.SQL(", ").join(map(sql.Identifier, fieldnames)),
         )
     ) as copy:
         for record in records:
@@ -57,5 +57,5 @@ def create_many(cursor: Cursor, records: list[T]) -> list[T]:
                     "not the same record type"
                     f": f{record_type} and f{type(record)}"
                 )
-            copy.write_row(record.get_values())
+            copy.write_row(tuple(record.get_values()))
     return records
