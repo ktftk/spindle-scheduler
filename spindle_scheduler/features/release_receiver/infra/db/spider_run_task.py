@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import json
 import uuid
 
 from psycopg import Cursor
@@ -17,7 +18,7 @@ class SpiderRunTask(RecordBase):
     id: uuid.UUID
     spider_name: str
     scheduled_datetime: datetime.datetime
-    metadata: dict
+    metadata: str
 
     @classmethod
     def create(cls, spider_run_task: AppSpiderRunTask) -> SpiderRunTask:
@@ -25,7 +26,7 @@ class SpiderRunTask(RecordBase):
             id=spider_run_task.id,
             spider_name=spider_run_task.spider_name,
             scheduled_datetime=spider_run_task.scheduled_datetime,
-            metadata=spider_run_task.metadata,
+            metadata=json.dumps(spider_run_task.metadata),
         )
 
 
