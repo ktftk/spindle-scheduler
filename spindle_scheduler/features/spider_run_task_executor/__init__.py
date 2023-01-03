@@ -1,2 +1,5 @@
 from .domains import SpiderRunTask
-from .infra.db import read_executable_spider_run_tasks
+from .infra.db import (
+    create_executed_spider_run_tasks,
+    read_executable_spider_run_tasks,
+)

@@ -12,6 +12,7 @@ from spindle_scheduler.config import (
 )
 from spindle_scheduler.features.spider_run_task_executor import (
     SpiderRunTask,
+    create_executed_spider_run_tasks,
     read_executable_spider_run_tasks,
 )
 
@@ -34,6 +35,7 @@ def execute_spider_run_tasks(cursor: Cursor = Depends(get_cursor)):
         advance_time=SPIDER_RUN_TASK_EXECUTION_ADVANCE_TIME,
         deadline_time=SPIDER_RUN_TASK_EXECUTION_DEADLINE_TIME,
     )
+    create_executed_spider_run_tasks(cursor, spider_run_tasks)
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content=spider_run_tasks,
