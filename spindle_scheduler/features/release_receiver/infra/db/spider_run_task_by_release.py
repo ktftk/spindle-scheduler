@@ -20,7 +20,7 @@ class SpiderRunTaskByRelease(RecordBase):
     def create(cls, spider_run_task: SpiderRunTask) -> SpiderRunTaskByRelease:
         return cls(
             spider_run_task_id=spider_run_task.id,
-            release_hash=spider_run_task.trigger_release.hash,
+            release_hash=spider_run_task.created_by.hash,
         )
 
 

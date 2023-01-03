@@ -16,7 +16,7 @@ def load_resources() -> None:
         cur = conn.cursor()
         context_load = ContextLoad()
         create_context_load(cur, context_load)
-        releases = load_releases(cur, context_load)
+        releases = load_releases(cur, load_id=context_load.id)
         spider_run_tasks = []
         for release in releases:
             spider_run_tasks += create_spider_run_tasks(release)

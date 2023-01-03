@@ -23,7 +23,7 @@ class Release(RecordBase):
     load_id: uuid.UUID
 
     @classmethod
-    def create(cls, release: AppRelease) -> Release:
+    def create(cls, release: AppRelease, load_id: uuid.UUID) -> Release:
         return cls(
             hash=release.hash,
             id=release.id,
@@ -32,12 +32,15 @@ class Release(RecordBase):
             frequency=release.frequency,
             edition=release.edition,
             scheduled_datetime=release.scheduled_datetime,
-            load_id=release.context_load.id,
+            load_id=load_id,
         )
 
 
 def create_releases(
-    cursor: Cursor, releases: list[AppRelease]
+    cursor: Cursor, releases: list[AppRelease], load_id: uuid.UUID
 ) -> list[AppRelease]:
-    create_many(cursor, [Release.create(release) for release in releases])
+    create_many(
+        cursor,
+        [Release.create(release, load_id=load_id) for release in releases],
+    )
     return releases

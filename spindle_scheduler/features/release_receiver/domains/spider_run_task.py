@@ -12,4 +12,4 @@ class SpiderRunTask(BaseModel):
     spider_inputs: dict
     scheduled_datetime: datetime.datetime
     metadata: dict = Field(default_factory=dict)
-    trigger_release: Release
+    created_by: Release
