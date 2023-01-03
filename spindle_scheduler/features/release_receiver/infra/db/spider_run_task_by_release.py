@@ -12,7 +12,7 @@ from ...domains import SpiderRunTask
 
 class SpiderRunTaskByRelease(RecordBase):
     _schema = DB_SCHEMA
-    _tablename = "spinder_run_task_by_releaase"
+    _tablename = "spider_run_task_by_release"
     spider_run_task_id: uuid.UUID
     release_hash: str
 
