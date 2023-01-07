@@ -1,1 +1,1 @@
-from .load_resources import load_resources
+from .load_spider_run_tasks import load_spider_run_tasks

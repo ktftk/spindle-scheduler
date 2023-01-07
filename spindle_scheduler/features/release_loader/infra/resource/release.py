@@ -6,13 +6,13 @@ from pandera.typing import Series
 from spindle_scheduler.utils import datetime_from_timestamp
 
 from ...config import RELEASE_RESOURCE_PATH
-from ...domains import RawRelease
-from .utils import read_csv
+from ...domains import ReleaseResource
+from .io import read_csv
 
 FREQUENCY_CODES = ["Y", "Q", "M", "W", "D"]
 
 
-class RawReleaseSchema(pa.SchemaModel):
+class ReleaseResourceSchema(pa.SchemaModel):
     id: Series[str] = pa.Field(
         unique=True, str_length={"min_value": 32, "max_value": 32}
     )
@@ -26,7 +26,7 @@ class RawReleaseSchema(pa.SchemaModel):
         strict = True
 
 
-def read_releases() -> list[RawRelease]:
+def read_release_resources() -> list[ReleaseResource]:
     df = read_csv(RELEASE_RESOURCE_PATH)
     df = df[
         [
@@ -38,7 +38,7 @@ def read_releases() -> list[RawRelease]:
             "scheduled_timestamp",
         ]
     ]
-    RawReleaseSchema.validate(df)
+    ReleaseResourceSchema.validate(df)
     df["edition"] = df["edition_period_start_date"].apply(
         lambda x: datetime.date.fromisoformat(x)
     )
@@ -46,4 +46,6 @@ def read_releases() -> list[RawRelease]:
     df["scheduled_datetime"] = df["scheduled_timestamp"].apply(
         datetime_from_timestamp
     )
-    return [RawRelease.parse_obj(record) for record in df.to_dict("records")]
+    return [
+        ReleaseResource.parse_obj(record) for record in df.to_dict("records")
+    ]

@@ -1,3 +1,1 @@
-from spindle_scheduler.domains import Release
-
-from .release import RawRelease
+from .release_resource import ReleaseResource
