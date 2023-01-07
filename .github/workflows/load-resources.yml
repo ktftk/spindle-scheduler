@@ -5,9 +5,11 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  load-resources:
     runs-on: ubuntu-latest
-    environment: dev
+
+    environment: development
+
     steps:
       - uses: actions/checkout@v2
       - name: Cloud SQL Proxy
