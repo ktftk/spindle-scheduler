@@ -1,7 +1,14 @@
 from ..domains import Release, SpiderRunTask
 
 
-def create_spider_run_tasks(release: Release) -> list[SpiderRunTask]:
+def create_spider_run_tasks(releases: list[Release]) -> list[SpiderRunTask]:
+    result = []
+    for release in releases:
+        result += receive_release(release)
+    return result
+
+
+def receive_release(release: Release) -> list[SpiderRunTask]:
     if release.group_code == "economy.us.cpi.main":
         return [
             SpiderRunTask(
