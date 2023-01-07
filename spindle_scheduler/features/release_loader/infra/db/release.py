@@ -7,7 +7,7 @@ from psycopg import Cursor
 
 from spindle_scheduler import Release as AppRelease
 from spindle_scheduler.config import DB_SCHEMA
-from spindle_scheduler.infra.db import RecordBase, create_many
+from spindle_scheduler.repository import RecordBase, create_many
 
 
 class Release(RecordBase):

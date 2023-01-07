@@ -7,7 +7,7 @@ import uuid
 from psycopg import Cursor
 
 from spindle_scheduler.config import DB_SCHEMA
-from spindle_scheduler.infra.db import RecordBase, create_many
+from spindle_scheduler.repository import RecordBase, create_many
 
 from ...domains import SpiderRunTask as AppSpiderRunTask
 

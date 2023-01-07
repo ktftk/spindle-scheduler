@@ -8,7 +8,7 @@ from psycopg import Cursor
 from spindle_scheduler.config import DB_SCHEMA
 
 from ...domains import ContextLoad as AppContextLoad
-from .helper import RecordBase, crete
+from .core import RecordBase, crete
 
 
 class ContextLoad(RecordBase):

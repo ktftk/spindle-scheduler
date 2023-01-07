@@ -5,7 +5,7 @@ from spindle_scheduler.features.release_loader.services import load_releases
 from spindle_scheduler.features.release_receiver.services import (
     load_spider_run_tasks,
 )
-from spindle_scheduler.infra.db import create_context_load
+from spindle_scheduler.repository import create_context_load
 
 from ..domains import ContextLoad
 
