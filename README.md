@@ -1,1 +1,1 @@
-# spinner-scheduler
+# spindle-scheduler

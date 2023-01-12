@@ -1,0 +1,78 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test
+
+    runs-on: ubuntu-latest
+
+    environment: test
+
+    env:
+      DB_URL: postgresql://postgres:password@localhost:5432/integry
+      DB_HOST: localhost
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_PORT: 5432
+      DB_DBNAME: integry
+      DB_SCHEMA: spindle_scheduler
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Test DB
+        uses: ktftk/integry-db-schema/.github/actions/setup-test-db@main
+        with:
+          working-directory: ./.integry-db-schema
+          access-token: ${{ secrets.INTEGRY_DB_SCHEMA_PAT }}
+
+      - name: dbt build
+        uses: ktftk/integry-dbt-postgres/.github/actions/dbt-build@main
+        with:
+          working-directory: ./.integry-dbt-postgres
+          access-token: ${{ secrets.INTEGRY_DBT_POSTGRES_PAT }}
+          dbt-host: ${{ env.DB_HOST }}
+          dbt-user: ${{ env.DB_USER }}
+          dbt-password: ${{ env.DB_PASSWORD }}
+          dbt-port: ${{ env.DB_PORT }}
+          dbt-dbname: ${{ env.DB_DBNAME }}
+          dbt-schema: ${{ env.DB_SCHEMA }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: pip install
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: pytest release_loader and release_receiver
+        run: pytest -v ./tests
+
+      - name: load resources
+        run: |
+          pip install -e .
+          python ./scripts/load_resources.py
+
+      - name: dbt build
+        env:
+          DBT_HOST: ${{ env.DB_HOST }}
+          DBT_USER: ${{ env.DB_USER }}
+          DBT_PASSWORD: ${{ env.DB_PASSWORD }}
+          DBT_PORT: ${{ env.DB_PORT }}
+          DBT_DBNAME: ${{ env.DB_DBNAME }}
+          DBT_SCHEMA: ${{ env.DB_SCHEMA }}
+        run: dbt build --target prod
+        working-directory: ./.integry-dbt-postgres
+
+      - name: pytest spider_run_task_executor
+        run: pytest -v ./app

@@ -1,0 +1,57 @@
+name: "Deploy to Cloud Run"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-to-cloud-run:
+    name: Depoly to Cloud Run
+
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    runs-on: ubuntu-latest
+
+    environment: development
+
+    env:
+      GCP_ARTIFACT_REGISTRY_HOSTNAME: "asia-northeast1-docker.pkg.dev"
+      DOCKER_IMAGE_LATEST_TAG: "asia-northeast1-docker.pkg.dev/logos-dev-373707/integry/spindle-scheduler:latest"
+      DOCKER_IMAGE_HASHED_TAG: "asia-northeast1-docker.pkg.dev/logos-dev-373707/integry/spindle-scheduler:${{ github.sha }}"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: "projects/423264999929/locations/global/workloadIdentityPools/github-actions/providers/github-actions"
+          service_account: "github-actions@logos-dev-373707.iam.gserviceaccount.com"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - run: gcloud auth configure-docker ${{ env.GCP_ARTIFACT_REGISTRY_HOSTNAME }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE_LATEST_TAG }}
+            ${{ env.DOCKER_IMAGE_HASHED_TAG }}
+          cache-from: "type=gha"
+          cache-to: "type=gha,mode=max"
+
+      # - name: "Deploy to Cloud Run"
+      #   uses: "google-github-actions/deploy-cloudrun@v1"
+      #   with:
+      #     service: "spindle-scheduler"
+      #     region: "asia-northeast1"
+      #     image: ${{ env.DOCKER_IMAGE_LATEST_TAG }}

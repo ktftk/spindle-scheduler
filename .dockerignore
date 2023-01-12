@@ -1,0 +1,14 @@
+README.md
+
+.env
+.envrc
+
+.github
+.gitignore
+
+.vscode
+
+venv
+.mypy_cache
+.python-version
+*.egg-info
