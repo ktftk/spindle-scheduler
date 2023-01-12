@@ -12,6 +12,10 @@ jobs:
 
     environment: development
 
+    env:
+      CLOUD_RUN_JOB_NAME: "integry-dbt-build"
+      CLOUD_RUN_JOB_REGION: "asia-northeast1"
+
     steps:
       - uses: actions/checkout@v3
 
@@ -38,3 +42,16 @@ jobs:
           DB_URL: "${{ secrets.DB_URL }}"
           DB_SCHEMA: "${{ secrets.DB_SCHEMA }}"
         run: python ./scripts/load_resources.py
+
+      - uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: "projects/423264999929/locations/global/workloadIdentityPools/github-actions/providers/github-actions"
+          service_account: "github-actions@logos-dev-373707.iam.gserviceaccount.com"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          install_components: "beta"
+
+      - name: dbt build
+        run: gcloud beta run jobs execute ${{ env.CLOUD_RUN_JOB_NAME }} --region ${{ env.CLOUD_RUN_JOB_REGION }} --wait
