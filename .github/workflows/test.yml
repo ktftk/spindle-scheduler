@@ -59,7 +59,9 @@ jobs:
         run: pytest -v ./tests
 
       - name: load resources
-        run: python ./scripts/load_resources.py
+        run: |
+          pip install -e .
+          python ./scripts/load_resources.py
 
       - name: dbt build
         env:
