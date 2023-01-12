@@ -20,7 +20,7 @@ jobs:
       DB_PASSWORD: password
       DB_PORT: 5432
       DB_DBNAME: integry
-      DB_SCHEMA: spindle
+      DB_SCHEMA: spindle_scheduler
 
     steps:
       - uses: actions/checkout@v3
