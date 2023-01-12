@@ -6,12 +6,14 @@ on:
 
 jobs:
   load-resources:
+    name: Load Resources
+
     runs-on: ubuntu-latest
 
     environment: development
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Cloud SQL Proxy
         run: |
@@ -22,16 +24,16 @@ jobs:
               -credential_file=./cloud-sql-proxy-sa-key.json &
 
       - name: Set up Python 3.11
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
       - name: pip install
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install -e .
 
-      - name: Run Python
+      - name: Load Resources
         env:
           DB_URL: "${{ secrets.DB_URL }}"
           DB_SCHEMA: "${{ secrets.DB_SCHEMA }}"
