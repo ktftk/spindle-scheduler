@@ -1,0 +1,11 @@
+README.md
+
+.github
+.gitignore
+
+.vscode
+
+venv
+.mypy_cache
+.python-version
+*.egg-info
