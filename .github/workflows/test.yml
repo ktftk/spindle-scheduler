@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test
+
+    runs-on: ubuntu-latest
+
+    environment: test
+
+    env:
+      DB_URL: postgresql://postgres:password@localhost:5432/integry
+      DB_SCHEMA: spindle
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Test DB
+        uses: ktftk/integry-db-schema/.github/actions/setup-test-db@main
+        with:
+          working-directory: ./.integry-db-schema
+          access-token: ${{ secrets.INTEGRY_DB_SCHEMA_PAT }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: pip install
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: pytest
+        run: pytest -v
