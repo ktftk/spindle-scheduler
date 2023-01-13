@@ -49,9 +49,9 @@ jobs:
           cache-from: "type=gha"
           cache-to: "type=gha,mode=max"
 
-      # - name: "Deploy to Cloud Run"
-      #   uses: "google-github-actions/deploy-cloudrun@v1"
-      #   with:
-      #     service: "spindle-scheduler"
-      #     region: "asia-northeast1"
-      #     image: ${{ env.DOCKER_IMAGE_LATEST_TAG }}
+      - name: "Deploy to Cloud Run"
+        uses: "google-github-actions/deploy-cloudrun@v1"
+        with:
+          service: "spindle-scheduler"
+          region: "asia-northeast1"
+          image: ${{ env.DOCKER_IMAGE_LATEST_TAG }}
