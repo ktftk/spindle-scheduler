@@ -1,0 +1,34 @@
+name: Test tecal
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-tecal-scraper:
+    name: Test tecal
+
+    runs-on: ubuntu-latest
+
+    environment: test
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version-file: .python-version
+          cache: pip
+
+      - name: pip install
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install
+        working-directory: ./src/tecal
+
+      - name: Pytest
+        run: pytest -s -vv
+        working-directory: ./src/tecal

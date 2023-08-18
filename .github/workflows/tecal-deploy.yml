@@ -1,0 +1,134 @@
+name: tecal deployment
+
+on:
+  workflow_call:
+    inputs:
+      cloud-run-concurrency:
+        default: 4
+        required: false
+        type: number
+      cloud-run-cpu:
+        default: 1
+        required: false
+        type: number
+      cloud-run-max-instance:
+        default: 2
+        required: false
+        type: number
+      cloud-run-memory:
+        default: 1Gi
+        required: false
+        type: string
+      cloud-run-min-instance:
+        default: 0
+        required: false
+        type: number
+      cloud-run-port:
+        default: 8080
+        required: false
+        type: number
+      cloud-run-region:
+        default: asia-northeast1
+        required: false
+        type: string
+      cloud-run-sa:
+        required: true
+        type: string
+      cloud-run-service-name:
+        default: tecal-scraper
+        required: false
+        type: string
+      cloud-run-timeout:
+        default: 60s
+        required: false
+        type: string
+      docker-image-base-url:
+        required: true
+        type: string
+      gar-hostname:
+        default: asia-northeast1-docker.pkg.dev
+        required: true
+        type: string
+      gcp-project-id:
+        required: true
+        type: string
+      gcp-wi-provider:
+        required: true
+        type: string
+      gcp-wi-sa:
+        required: true
+        type: string
+      gcs-bucket:
+        required: true
+        type: string
+      gcs-raw-calendar-folder:
+        required: true
+        type: string
+      gcs-parsed-calendar-folder:
+        required: true
+        type: string
+      gcs-latest-calendar-name:
+        required: true
+        type: string
+
+jobs:
+  deploy-tecal:
+    name: tecal deployment
+
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_IMAGE_HASHED_TAG: ${{ inputs.docker-image-base-url }}:${{ github.sha }}
+      DOCKER_IMAGE_LATEST_TAG: ${{ inputs.docker-image-base-url }}:latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ inputs.gcp-wi-provider }}
+          service_account: ${{ inputs.gcp-wi-sa }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Auth Artifact Registry
+        run: gcloud auth configure-docker ${{ inputs.gar-hostname }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          version: "v0.10.5"
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: ./src/tecal
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE_HASHED_TAG }}
+            ${{ env.DOCKER_IMAGE_LATEST_TAG }}
+          provenance: false
+          cache-from: "type=gha"
+          cache-to: "type=gha,mode=max"
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ inputs.cloud-run-service-name }} \
+          --image=${{ env.DOCKER_IMAGE_HASHED_TAG }} \
+          --project=${{ inputs.gcp-project-id }} \
+          --region=${{ inputs.cloud-run-region }} \
+          --service-account=${{ inputs.cloud-run-sa }} \
+          --concurrency=${{ inputs.cloud-run-concurrency }} \
+          --cpu=${{ inputs.cloud-run-cpu }} \
+          --ingress=all \
+          --max-instances=${{ inputs.cloud-run-max-instance }} \
+          --memory=${{ inputs.cloud-run-memory }} \
+          --min-instances=${{ inputs.cloud-run-min-instance }} \
+          --port=${{ inputs.cloud-run-port }} \
+          --timeout=${{ inputs.cloud-run-timeout }} \
+          --set-env-vars="GCS_BUCKET_NAME=${{ inputs.gcs-bucket }}" \
+          --set-env-vars="GCS_RAW_CALENDAR_FOLDER=${{ inputs.gcs-raw-calendar-folder }}" \
+          --set-env-vars="GCS_PARSED_CALENDAR_FOLDER=${{ inputs.gcs-parsed-calendar-folder }}" \
+          --set-env-vars="GCS_LATEST_CALENDAR_NAME=${{ inputs.gcs-latest-calendar-name }}" \
+          --no-allow-unauthenticated
