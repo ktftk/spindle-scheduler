@@ -1,4 +1,4 @@
-name: Test tecal
+name: Test tecal scraper
 
 on:
   pull_request:
@@ -27,8 +27,8 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           playwright install
-        working-directory: ./src/tecal
+        working-directory: ./src/tecal_scraper
 
       - name: Pytest
         run: pytest -s -vv
-        working-directory: ./src/tecal
+        working-directory: ./src/tecal_scraper

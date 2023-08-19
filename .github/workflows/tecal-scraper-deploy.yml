@@ -1,4 +1,4 @@
-name: tecal deployment
+name: tecal scraper deployment
 
 on:
   workflow_call:
