@@ -5,8 +5,8 @@
       "path": "."
     },
     {
-      "name": "tecal",
-      "path": "src/tecal"
+      "name": "tecal_scraper",
+      "path": "src/tecal_scraper"
     }
   ],
   "settings": {}
