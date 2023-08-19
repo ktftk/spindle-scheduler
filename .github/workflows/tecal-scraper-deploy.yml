@@ -103,7 +103,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./src/tecal
+          context: ./src/tecal_scraper
           push: true
           tags: |
             ${{ env.DOCKER_IMAGE_HASHED_TAG }}
