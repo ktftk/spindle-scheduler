@@ -1,0 +1,33 @@
+name: Cloud Run Deploy in prod
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy-tecal:
+    name: Deploy tecal
+
+    uses: ./.github/workflows/tecal-scraper-deploy.yml
+
+    permissions:
+      contents: read
+      id-token: write
+
+    with:
+      cloud-run-sa: tecal-scraper@integry-prod-20230721.iam.gserviceaccount.com
+      docker-image-base-url: asia-northeast1-docker.pkg.dev/integry-prod-20230721/main/tecal-scraper
+      gar-hostname: asia-northeast1-docker.pkg.dev
+      gcp-project-id: integry-prod-20230721
+      gcp-wi-provider: projects/1032850580984/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+      gcp-wi-sa: spindle-scheduler-ga@integry-prod-20230721.iam.gserviceaccount.com
+      gcs-bucket: tecal-scraper-202308
+      gcs-raw-calendar-folder: raw
+      gcs-parsed-calendar-folder: parsed
+      gcs-latest-calendar-name: latest
+
+    secrets: inherit

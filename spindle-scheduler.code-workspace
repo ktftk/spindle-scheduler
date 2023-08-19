@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "name": "spindle-scheduler",
+      "path": "."
+    },
+    {
+      "name": "tecal_scraper",
+      "path": "src/tecal_scraper"
+    }
+  ],
+  "settings": {}
+}
