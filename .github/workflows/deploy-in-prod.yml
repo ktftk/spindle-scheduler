@@ -1,4 +1,4 @@
-name: Cloud Run Deploy in dev
+name: Cloud Run Deploy in prod
 
 on:
   push:
