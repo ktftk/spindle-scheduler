@@ -24,14 +24,6 @@ jobs:
 
     environment: ${{ inputs.environment }}
 
-    env:
-      DBT_HOST: localhost
-      DBT_USER: ${{ secrets.CLOUD_SQL_USER }}
-      DBT_PASSWORD: ${{ secrets.CLOUD_SQL_PASSWORD }}
-      DBT_PORT: 5432
-      DBT_DBNAME: ${{ inputs.db-name }}
-      DBT_PROD_SCHEMA: ${{ inputs.db-schema }}
-
     steps:
       - uses: actions/checkout@v3
 
@@ -54,6 +46,6 @@ jobs:
 
       - name: Prisma migrate deploy
         env:
-          PRISMA_DB_URL: postgresql://${{ secrets.CLOUD_SQL_USER }}:${{ secrets.CLOUD_SQL_PASSWORD }}@localhost:5432/${{ inputs.db-name }}?schema=${{ inputs.db-schema }}
+          DATABASE_URL: postgresql://${{ secrets.CLOUD_SQL_USER }}:${{ secrets.CLOUD_SQL_PASSWORD }}@localhost:5432/${{ inputs.db-name }}?schema=${{ inputs.db-schema }}
         run: prisma migrate deploy
         working-directory: ./src/spindle_invoker
