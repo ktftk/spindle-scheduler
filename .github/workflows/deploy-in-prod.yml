@@ -39,7 +39,7 @@ jobs:
       gar-hostname: asia-northeast1-docker.pkg.dev
       gcp-project-id: integry-prod-20230721
       gcp-wi-provider: projects/1032850580984/locations/global/workloadIdentityPools/github-actions/providers/github-actions
-      gcp-wi-sa: weaver-ga@integry-prod-20230721.iam.gserviceaccount.com
+      gcp-wi-sa: spindle-scheduler-ga@integry-prod-20230721.iam.gserviceaccount.com
       workflow-region: asia-northeast1
       workflow-name: spindle-workflow
 
