@@ -47,5 +47,5 @@ jobs:
       - name: Prisma migrate deploy
         env:
           DATABASE_URL: postgresql://${{ secrets.CLOUD_SQL_USER }}:${{ secrets.CLOUD_SQL_PASSWORD }}@localhost:5432/${{ inputs.db-name }}?schema=${{ inputs.db-schema }}
-        run: prisma migrate resolve --applied init
+        run: prisma migrate resolve --applied 20230821072806_init
         working-directory: ./src/spindle_invoker
