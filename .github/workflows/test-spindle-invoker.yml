@@ -1,0 +1,37 @@
+name: Test spindle invoker
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-spindle-invoker:
+    name: Test spindle invoker
+
+    runs-on: ubuntu-latest
+
+    environment: test
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version-file: .python-version
+          cache: pip
+
+      - name: pip install
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+        working-directory: ./src/spindle_invoker
+
+      - name: start db
+        run: sh ./scripts/start_db.sh
+        working-directory: ./src/spindle_invoker
+
+      - name: Pytest
+        run: pytest -s -vv ./tests
+        working-directory: ./src/spindle_invoker

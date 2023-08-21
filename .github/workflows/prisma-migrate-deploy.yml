@@ -1,0 +1,59 @@
+name: Prisma Migrate Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+
+      db-name:
+        default: integry
+        required: false
+        type: string
+      db-schema:
+        default: weaver
+        required: false
+        type: string
+
+jobs:
+  prisma-migrate-deploy:
+    name: Prisma migrate deploy
+
+    runs-on: ubuntu-latest
+
+    environment: ${{ inputs.environment }}
+
+    env:
+      DBT_HOST: localhost
+      DBT_USER: ${{ secrets.CLOUD_SQL_USER }}
+      DBT_PASSWORD: ${{ secrets.CLOUD_SQL_PASSWORD }}
+      DBT_PORT: 5432
+      DBT_DBNAME: ${{ inputs.db-name }}
+      DBT_PROD_SCHEMA: ${{ inputs.db-schema }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cloud SQL Proxy
+        run: |
+          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+          chmod +x cloud_sql_proxy
+          echo '${{ secrets.CLOUD_SQL_PROXY_SA_KEY }}' > ./cloud-sql-proxy-sa-key.json
+          ./cloud_sql_proxy -instances=${{ secrets.CLOUD_SQL_CONNECTION_NAME }}=tcp:5432  \
+              -credential_file=./cloud-sql-proxy-sa-key.json &
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version-file: ./src/spindle_invoker/.python-version
+          cache: pip
+
+      - run: pip install -r requirements.txt
+        working-directory: ./src/spindle_invoker
+
+      - name: Prisma migrate deploy
+        env:
+          PRISMA_DB_URL: postgresql://${{ secrets.CLOUD_SQL_USER }}:${{ secrets.CLOUD_SQL_PASSWORD }}@localhost:5432/${{ inputs.db-name }}?schema=${{ inputs.db-schema }}
+        run: prisma migrate deploy
+        working-directory: ./src/spindle_invoker
