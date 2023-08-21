@@ -45,14 +45,6 @@ on:
       cloud-sql-connection-name:
         required: true
         type: string
-      db-name:
-        default: integry
-        required: false
-        type: string
-      db-schema:
-        default: weaver
-        required: false
-        type: string
       docker-image-base-url:
         required: true
         type: string
@@ -132,7 +124,6 @@ jobs:
           --min-instances=${{ inputs.cloud-run-min-instance }} \
           --port=${{ inputs.cloud-run-port }} \
           --timeout=${{ inputs.cloud-run-timeout }} \
-          --set-env-vars="DB_SCHEMA=${{ inputs.db-schema }}" \
           --set-secrets="DATABASE_URL=conn-string-spindle-scheduler:latest" \
           --set-env-vars="WORKFLOW_PROJECT_ID=${{ inputs.gcp-project-id }}" \
           --set-env-vars="WORKFLOW_LOCATION=${{ inputs.workflow-region }}" \
