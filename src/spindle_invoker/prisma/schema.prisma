@@ -1,0 +1,33 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider             = "prisma-client-py"
+    interface            = "sync"
+    recursive_type_depth = 5
+}
+
+model SpiderRunTask {
+    hash                 String   @id
+    spider_run_rule_id   String
+    spider_name          String
+    release_group_code   String
+    invoke_delay         Int?
+    input_params         Json?
+    target_period        DateTime @db.Date
+    release_period       DateTime @db.Date
+    release_scheduled_at DateTime
+    scheduled_at         DateTime
+
+    @@map("spider_run_task")
+}
+
+model InvokedSpiderRunTask {
+    hash                  String   @id
+    invoked_at            DateTime
+    workflow_execution_id String
+
+    @@map("invoked_spider_run_task")
+}

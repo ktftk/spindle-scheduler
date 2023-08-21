@@ -5,6 +5,10 @@
       "path": "."
     },
     {
+      "name": "spindle_invoker",
+      "path": "src/spindle_invoker"
+    },
+    {
       "name": "tecal_scraper",
       "path": "src/tecal_scraper"
     }

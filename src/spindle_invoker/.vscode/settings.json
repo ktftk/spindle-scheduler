@@ -1,0 +1,21 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.python"
+    },
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": ["--line-length", "79"],
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.analysis.typeCheckingMode": "basic",
+    "[prisma]": {
+      "editor.defaultFormatter": "Prisma.prisma"
+    }
+  }
+  
