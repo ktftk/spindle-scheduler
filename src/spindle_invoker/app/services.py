@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from datetime import date
+from typing import Optional
 
 from google.cloud.workflows import executions_v1
 from pydantic import BaseModel
@@ -11,8 +12,8 @@ from .domains import InovkedSpiderRunTask, SpiderRunTask
 
 class SpiderWorkflowPayload(BaseModel):
     spider_name: str
-    input_params: dict
-    target_period: date
+    input_params: Optional[dict]
+    target_period: Optional[date]
     scheduled_timestamp: float
 
     @classmethod
