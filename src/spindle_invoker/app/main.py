@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
@@ -10,6 +11,9 @@ from .config import TASK_QUERY_END_OFFSET, TASK_QUERY_START_OFFSET
 from .domains import InovkedSpiderRunTask, SpiderRunTask
 from .repository import Repository
 from .services import execute_workflow
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class TaskQuery(BaseModel):
@@ -58,10 +62,16 @@ def spider_workflow_run(
         end=task_query.base_datetime
         + timedelta(seconds=task_query.end_offset),
     )
+    upcoming_tasks = [
+        task
+        for task in tasks
+        if not repository.is_spider_run_task_invoked(hash=task.hash)
+    ]
+    logger.info(f"tasks count: {len(upcoming_tasks)}")
     result: list[InovkedSpiderRunTask] = []
-    for task in tasks:
-        if not repository.is_spider_run_task_invoked(hash=task.hash):
-            completed_task = workflow_executor.run(task)
-            repository.write_invoked_spider_run_task(completed_task)
-            result.append(completed_task)
+    for task in upcoming_tasks:
+        completed_task = workflow_executor.run(task)
+        repository.write_invoked_spider_run_task(completed_task)
+        result.append(completed_task)
+        logger.info(f"invoked task: {task.json()}")
     return result
