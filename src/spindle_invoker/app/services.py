@@ -12,7 +12,7 @@ from .domains import InovkedSpiderRunTask, SpiderRunTask
 
 class SpiderWorkflowPayload(BaseModel):
     spider_name: str
-    input_params: Optional[dict]
+    params: Optional[dict]
     target_period: Optional[date]
     scheduled_timestamp: float
 
@@ -22,7 +22,7 @@ class SpiderWorkflowPayload(BaseModel):
     ) -> SpiderWorkflowPayload:
         return cls(
             spider_name=task.spider_name,
-            input_params=task.input_params,
+            params=task.input_params,
             target_period=task.target_period,
             scheduled_timestamp=task.scheduled_at.timestamp(),
         )
