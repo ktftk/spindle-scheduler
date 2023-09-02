@@ -5,3 +5,6 @@ TASK_QUERY_START_OFFSET = int(
 )
 
 TASK_QUERY_END_OFFSET = int(os.getenv("TASK_QUERY_END_OFFSET", 60 * 10))
+
+
+GCP_PROJECT_ID = os.environ["GCP_PROJECT_ID"]

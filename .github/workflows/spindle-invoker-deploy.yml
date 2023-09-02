@@ -125,6 +125,7 @@ jobs:
           --port=${{ inputs.cloud-run-port }} \
           --timeout=${{ inputs.cloud-run-timeout }} \
           --set-secrets="DATABASE_URL=conn-string-spindle-scheduler:latest" \
+          --set-env-vars="GCP_PROJECT_ID=${{ inputs.gcp-project-id }}" \
           --set-env-vars="WORKFLOW_PROJECT_ID=${{ inputs.gcp-project-id }}" \
           --set-env-vars="WORKFLOW_LOCATION=${{ inputs.workflow-region }}" \
           --set-env-vars="WORKFLOW_NAME=${{ inputs.workflow-name }}" \
