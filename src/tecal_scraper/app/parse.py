@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import date, datetime
 from pathlib import Path
@@ -5,6 +6,9 @@ from pathlib import Path
 import bs4
 import pandas as pd
 from bs4 import BeautifulSoup
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 def is_header_row(tr: bs4.element.Tag) -> bool:
@@ -163,17 +167,17 @@ def transform(df: pd.DataFrame, forward_date: date) -> pd.DataFrame:
 COLUMNS_FOR_UNIQUE = ["country_code", "event_name", "period", "datetime"]
 
 
-def validte_unique_scheduled_release(df: pd.DataFrame) -> None:
+def validte_unique_scheduled_release(df: pd.DataFrame) -> pd.DataFrame:
     scheduled_df = df[df["datetime"].notna()]
-    if len(scheduled_df[scheduled_df[COLUMNS_FOR_UNIQUE].duplicated()]) > 0:
-        raise ValueError(
-            "duplicated:\n",
-            scheduled_df[scheduled_df[COLUMNS_FOR_UNIQUE].duplicated()].head(),
-        )
+    duplicated = scheduled_df[scheduled_df[COLUMNS_FOR_UNIQUE].duplicated()]
+    for record in duplicated.to_dict(orient="records"):
+        logger.warning(f"duplicated record: {record}")
+    return scheduled_df.drop_duplicates(subset=COLUMNS_FOR_UNIQUE)
 
 
-def validate(df: pd.DataFrame) -> None:
-    validte_unique_scheduled_release(df)
+def validate(df: pd.DataFrame) -> pd.DataFrame:
+    df = validte_unique_scheduled_release(df)
+    return df
 
 
 def parse(source: str | Path, dest: str | Path, forward_date: date) -> None:
@@ -183,6 +187,6 @@ def parse(source: str | Path, dest: str | Path, forward_date: date) -> None:
     soup = BeautifulSoup(data, "html.parser")
     df = extract(soup)
     df = transform(df, forward_date)
-    validate(df)
+    df = validate(df)
 
     df.to_csv(dest, index=False)
