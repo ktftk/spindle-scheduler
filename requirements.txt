@@ -1,7 +1,0 @@
-fastapi[all]==0.89.1
-mypy-protobuf==3.4.0
-pandas==1.5.2
-pandas-stubs==1.5.2.230105
-pandera==0.13.4
-psycopg[binary]==3.1.7
-uuid6==2022.10.25
