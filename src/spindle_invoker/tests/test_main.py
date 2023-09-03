@@ -1,10 +1,15 @@
+import json
 import uuid
 from datetime import datetime, timezone
 
-from fastapi.testclient import TestClient
-
-from app.domains import InovkedSpiderRunTask, SpiderRunTask
+from app.domains import (
+    CompletedSpiderWorkflowRun,
+    InovkedSpiderRunTask,
+    LaunchedSpiderWorkflowRun,
+    SpiderRunTask,
+)
 from app.main import WorkflowExecutor, app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
@@ -18,7 +23,8 @@ class MockWorkflowExecutor:
             target_period=spider_run_task.target_period,
             scheduled_at=spider_run_task.scheduled_at,
             invoked_at=datetime.now(timezone.utc),
-            workflow_execution_id=str(uuid.uuid4()),
+            invocation_id=str(uuid.uuid4()),
+            execution_id=str(uuid.uuid4()),
         )
 
 
@@ -39,3 +45,41 @@ def test_spider_run() -> None:
     assert response.status_code == 201
     data = response.json()
     assert len(data) == 2
+
+
+def test_launched_spider_workflow_run() -> None:
+    launched_run = LaunchedSpiderWorkflowRun(
+        invocation_id=str(uuid.uuid4()),
+        invocation_type="on_demand",
+        spider_name="test_spider",
+        params={},
+        target_period=datetime(2023, 6, 29).date(),
+        launched_at=datetime.now(timezone.utc),
+    )
+    response = client.post(
+        "/v1/launched-spider-workflow-run",
+        json={
+            "launched_run": json.loads(launched_run.json()),
+        },
+    )
+    assert response.status_code == 201
+
+
+def test_completed_spider_workflow_run() -> None:
+    completed_run = CompletedSpiderWorkflowRun(
+        invocation_id=str(uuid.uuid4()),
+        invocation_type="on_demand",
+        spider_name="test_spider",
+        params={},
+        target_period=datetime(2023, 6, 29).date(),
+        launched_at=datetime.now(timezone.utc),
+        status="success",
+        completed_at=datetime.now(timezone.utc),
+    )
+    response = client.post(
+        "/v1/completed-spider-workflow-run",
+        json={
+            "completed_run": json.loads(completed_run.json()),
+        },
+    )
+    assert response.status_code == 201

@@ -1,9 +1,14 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from prisma import Prisma
+from prisma import Json, Prisma
 
-from .domains import InovkedSpiderRunTask, SpiderRunTask
+from .domains import (
+    CompletedSpiderWorkflowRun,
+    InovkedSpiderRunTask,
+    LaunchedSpiderWorkflowRun,
+    SpiderRunTask,
+)
 
 
 @dataclass
@@ -35,6 +40,36 @@ class Repository:
                 data={
                     "hash": task.hash,
                     "invoked_at": task.invoked_at,
-                    "workflow_execution_id": task.workflow_execution_id,
+                    "invocation_id": task.invocation_id,
+                    "execution_id": task.execution_id,
+                }
+            )
+
+    def write_launched_spider_workflow_run(
+        self, launch_task: LaunchedSpiderWorkflowRun
+    ) -> None:
+        with Prisma() as db:
+            db.launchedspiderworkflowrun.create(
+                data={
+                    "invocation_id": (launch_task.invocation_id),
+                    "invocation_type": launch_task.invocation_type,
+                    "spider_name": launch_task.spider_name,
+                    "params": Json(launch_task.params),
+                    "target_period": datetime.fromisoformat(
+                        launch_task.target_period.isoformat()
+                    ),
+                    "launched_at": launch_task.launched_at,
+                }
+            )
+
+    def write_completed_spider_workflow_run(
+        self, completed_run: CompletedSpiderWorkflowRun
+    ) -> None:
+        with Prisma() as db:
+            db.completedspiderworkflowrun.create(
+                data={
+                    "invocation_id": completed_run.invocation_id,
+                    "status": completed_run.status,
+                    "completed_at": completed_run.completed_at,
                 }
             )

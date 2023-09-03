@@ -5,12 +5,16 @@ from typing import Annotated
 
 from fastapi import Body, Depends, FastAPI
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from prisma import Prisma
 from pydantic import BaseModel, Field
 
-from prisma import Prisma
-
 from .config import TASK_QUERY_END_OFFSET, TASK_QUERY_START_OFFSET
-from .domains import InovkedSpiderRunTask, SpiderRunTask
+from .domains import (
+    CompletedSpiderWorkflowRun,
+    InovkedSpiderRunTask,
+    LaunchedSpiderWorkflowRun,
+    SpiderRunTask,
+)
 from .repository import Repository
 from .services import execute_workflow
 from .tracer import tracer
@@ -95,6 +99,40 @@ def spider_workflow_run(
             logger.info(f"invoked task: {task.json()}")
             span.add_event("invoked_task", json.loads(task.json()))
         return result
+
+
+@app.post(
+    "/v1/launched-spider-workflow-run",
+    response_model=LaunchedSpiderWorkflowRun,
+    status_code=201,
+)
+def launched_spider_workflow_run(
+    repository: Annotated[Repository, Depends(Repository)],
+    launched_run: Annotated[LaunchedSpiderWorkflowRun, Body(embed=True)],
+) -> LaunchedSpiderWorkflowRun:
+    with tracer.start_as_current_span(
+        "launched_spider_workflow_run",
+        attributes=json.loads(launched_run.json()),
+    ):
+        repository.write_launched_spider_workflow_run(launched_run)
+        return launched_run
+
+
+@app.post(
+    "/v1/completed-spider-workflow-run",
+    response_model=CompletedSpiderWorkflowRun,
+    status_code=201,
+)
+def completed_spider_workflow_run(
+    repository: Annotated[Repository, Depends(Repository)],
+    completed_run: Annotated[CompletedSpiderWorkflowRun, Body(embed=True)],
+) -> CompletedSpiderWorkflowRun:
+    with tracer.start_as_current_span(
+        "completed_spider_workflow_run",
+        attributes=json.loads(completed_run.json()),
+    ):
+        repository.write_completed_spider_workflow_run(completed_run)
+        return completed_run
 
 
 FastAPIInstrumentor.instrument_app(app)

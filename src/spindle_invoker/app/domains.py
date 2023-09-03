@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel
 
@@ -18,5 +18,20 @@ class InovkedSpiderRunTask(BaseModel):
     input_params: Optional[dict]
     target_period: date
     scheduled_at: datetime
+    invocation_id: str
     invoked_at: datetime
-    workflow_execution_id: str
+    execution_id: str
+
+
+class LaunchedSpiderWorkflowRun(BaseModel):
+    invocation_id: str
+    invocation_type: Literal["on_demand", "release_based"]
+    spider_name: str
+    params: dict
+    target_period: date
+    launched_at: datetime
+
+
+class CompletedSpiderWorkflowRun(LaunchedSpiderWorkflowRun):
+    status: Literal["success", "failure"]
+    completed_at: datetime
