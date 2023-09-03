@@ -47,7 +47,7 @@ def test_spider_run() -> None:
 
 
 def test_launched_spider_workflow_run() -> None:
-    launced_run = LaunchSpiderWorkflowRun(
+    launched_run = LaunchSpiderWorkflowRun(
         workflow_execution_id=str(uuid.uuid4()),
         trigger_type="on_demand",
         spider_name="test_spider",
@@ -58,7 +58,7 @@ def test_launched_spider_workflow_run() -> None:
     response = client.post(
         "/v1/launched-spider-workflow-run",
         json={
-            "launched_run": json.loads(launced_run.json()),
+            "launched_run": json.loads(launched_run.json()),
         },
     )
     assert response.status_code == 201

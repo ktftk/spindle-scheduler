@@ -125,14 +125,14 @@ def launched_spider_workflow_run(
 )
 def completed_spider_workflow_run(
     repository: Annotated[Repository, Depends(Repository)],
-    copmleted_run: Annotated[CompleteSpiderWorkflowRun, Body(embed=True)],
+    completed_run: Annotated[CompleteSpiderWorkflowRun, Body(embed=True)],
 ) -> CompleteSpiderWorkflowRun:
     with tracer.start_as_current_span(
         "completed_spider_workflow_run",
-        attributes=json.loads(copmleted_run.json()),
+        attributes=json.loads(completed_run.json()),
     ):
-        repository.write_completed_spider_workflow_run(copmleted_run)
-        return copmleted_run
+        repository.write_completed_spider_workflow_run(completed_run)
+        return completed_run
 
 
 FastAPIInstrumentor.instrument_app(app)

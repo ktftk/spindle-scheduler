@@ -56,7 +56,9 @@ class Repository:
                     "trigger_type": launch_task.trigger_type,
                     "spider_name": launch_task.spider_name,
                     "params": Json(launch_task.params),
-                    "target_period": launch_task.target_period,  # type: ignore
+                    "target_period": datetime.fromisoformat(
+                        launch_task.target_period.isoformat()
+                    ),
                     "launched_at": launch_task.launched_at,
                 }
             )
