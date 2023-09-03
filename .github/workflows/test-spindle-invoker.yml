@@ -14,6 +14,7 @@ jobs:
     environment: test
 
     env:
+      ENV: ci
       DATABASE_URL: postgresql://postgres:password@localhost:5432/omnibus?schema=spindle_scheduler
 
     steps:
