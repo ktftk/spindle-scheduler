@@ -10,7 +10,11 @@ from pydantic import BaseModel, Field
 from prisma import Prisma
 
 from .config import TASK_QUERY_END_OFFSET, TASK_QUERY_START_OFFSET
-from .domains import InovkedSpiderRunTask, SpiderRunTask
+from .domains import (
+    CompleteSpiderWorkflowRun,
+    InovkedSpiderRunTask,
+    SpiderRunTask,
+)
 from .repository import Repository
 from .services import execute_workflow
 from .tracer import tracer
@@ -95,6 +99,23 @@ def spider_workflow_run(
             logger.info(f"invoked task: {task.json()}")
             span.add_event("invoked_task", json.loads(task.json()))
         return result
+
+
+@app.post(
+    "/v1/completed-spider-workflow-run",
+    response_model=list[InovkedSpiderRunTask],
+    status_code=201,
+)
+def completed_spider_workflow_run(
+    repository: Annotated[Repository, Depends(Repository)],
+    copmleted_run: Annotated[CompleteSpiderWorkflowRun, Body(embed=True)],
+) -> CompleteSpiderWorkflowRun:
+    with tracer.start_as_current_span(
+        "completed_spider_workflow_run",
+        attributes=json.loads(copmleted_run.json()),
+    ):
+        repository.write_completed_spider_workflow_run(copmleted_run)
+        return copmleted_run
 
 
 FastAPIInstrumentor.instrument_app(app)

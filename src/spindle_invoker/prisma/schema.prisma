@@ -31,3 +31,15 @@ model InvokedSpiderRunTask {
 
     @@map("invoked_spider_run_task")
 }
+
+model CompletedSpiderWorkflowRun {
+    workflow_execution_id String   @id
+    trigger_type          String
+    status                String
+    spider_name           String
+    params                Json
+    target_period         DateTime @db.Date
+    completed_at          DateTime
+
+    @@map("completed_spider_workflow_run")
+}
