@@ -4,9 +4,9 @@ from datetime import datetime
 from prisma import Json, Prisma
 
 from .domains import (
-    CompleteSpiderWorkflowRun,
+    CompletedSpiderWorkflowRun,
     InovkedSpiderRunTask,
-    LaunchSpiderWorkflowRun,
+    LaunchedSpiderWorkflowRun,
     SpiderRunTask,
 )
 
@@ -46,7 +46,7 @@ class Repository:
             )
 
     def write_launched_spider_workflow_run(
-        self, launch_task: LaunchSpiderWorkflowRun
+        self, launch_task: LaunchedSpiderWorkflowRun
     ) -> None:
         with Prisma() as db:
             db.launchedspiderworkflowrun.create(
@@ -63,7 +63,7 @@ class Repository:
             )
 
     def write_completed_spider_workflow_run(
-        self, completed_run: CompleteSpiderWorkflowRun
+        self, completed_run: CompletedSpiderWorkflowRun
     ) -> None:
         with Prisma() as db:
             db.completedspiderworkflowrun.create(

@@ -3,9 +3,9 @@ import uuid
 from datetime import datetime, timezone
 
 from app.domains import (
-    CompleteSpiderWorkflowRun,
+    CompletedSpiderWorkflowRun,
     InovkedSpiderRunTask,
-    LaunchSpiderWorkflowRun,
+    LaunchedSpiderWorkflowRun,
     SpiderRunTask,
 )
 from app.main import WorkflowExecutor, app
@@ -48,7 +48,7 @@ def test_spider_run() -> None:
 
 
 def test_launched_spider_workflow_run() -> None:
-    launched_run = LaunchSpiderWorkflowRun(
+    launched_run = LaunchedSpiderWorkflowRun(
         invocation_id=str(uuid.uuid4()),
         invocation_type="on_demand",
         spider_name="test_spider",
@@ -66,7 +66,7 @@ def test_launched_spider_workflow_run() -> None:
 
 
 def test_completed_spider_workflow_run() -> None:
-    completed_run = CompleteSpiderWorkflowRun(
+    completed_run = CompletedSpiderWorkflowRun(
         invocation_id=str(uuid.uuid4()),
         invocation_type="on_demand",
         spider_name="test_spider",

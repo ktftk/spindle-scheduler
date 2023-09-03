@@ -12,7 +12,8 @@ from .domains import InovkedSpiderRunTask, SpiderRunTask
 
 
 class SpiderWorkflowPayload(BaseModel):
-    trigger_type: Literal["on_event"] = "on_event"
+    invocation_id: str
+    invocation_type: Literal["release_based"] = "release_based"
     spider_name: str
     params: Optional[dict]
     target_period: Optional[date]
@@ -23,6 +24,7 @@ class SpiderWorkflowPayload(BaseModel):
         cls, task: SpiderRunTask
     ) -> SpiderWorkflowPayload:
         return cls(
+            invocation_id=str(uuid.uuid4()),
             spider_name=task.spider_name,
             params=task.input_params,
             target_period=task.target_period,
@@ -64,7 +66,7 @@ def execute_workflow(task: SpiderRunTask) -> InovkedSpiderRunTask:
         input_params=task.input_params,
         target_period=task.target_period,
         scheduled_at=task.scheduled_at,
-        invocation_id=str(uuid.uuid4()),
+        invocation_id=payload.invocation_id,
         invoked_at=datetime.now(timezone.utc),
         execution_id=execiton_id,
     )

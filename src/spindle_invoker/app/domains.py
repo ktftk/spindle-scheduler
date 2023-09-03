@@ -24,15 +24,15 @@ class InovkedSpiderRunTask(BaseModel):
     execution_id: str
 
 
-class LaunchSpiderWorkflowRun(BaseModel):
-    invocation_id: str = Field(lambda: str(uuid.uuid4()))
-    invocation_type: Literal["on_demand", "on_release"]
+class LaunchedSpiderWorkflowRun(BaseModel):
+    invocation_id: str
+    invocation_type: Literal["on_demand", "release_based"]
     spider_name: str
     params: dict
     target_period: date
     launched_at: datetime
 
 
-class CompleteSpiderWorkflowRun(LaunchSpiderWorkflowRun):
+class CompletedSpiderWorkflowRun(LaunchedSpiderWorkflowRun):
     status: Literal["success", "failure"]
     completed_at: datetime
