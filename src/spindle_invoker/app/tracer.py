@@ -1,17 +1,19 @@
+import os
+
 from opentelemetry import trace
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-
-from .config import ENV, GCP_PROJECT_ID
 
 # https://cloud.google.com/trace/docs/setup/python-ot?hl=ja
 
 
 tracer_provider = TracerProvider()
 
-if ENV != "ci":
-    cloud_trace_exporter = CloudTraceSpanExporter(project_id=GCP_PROJECT_ID)
+if os.getenv("ENV", "dev") != "ci":
+    cloud_trace_exporter = CloudTraceSpanExporter(
+        project_id=os.environ["GCP_PROJECT_ID"]
+    )
 
     tracer_provider.add_span_processor(
         BatchSpanProcessor(cloud_trace_exporter)
