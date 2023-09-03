@@ -40,7 +40,8 @@ class Repository:
                 data={
                     "hash": task.hash,
                     "invoked_at": task.invoked_at,
-                    "workflow_execution_id": task.workflow_execution_id,
+                    "invocation_id": task.invocation_id,
+                    "execution_id": task.execution_id,
                 }
             )
 
@@ -50,10 +51,8 @@ class Repository:
         with Prisma() as db:
             db.launchedspiderworkflowrun.create(
                 data={
-                    "workflow_execution_id": (
-                        launch_task.workflow_execution_id
-                    ),
-                    "trigger_type": launch_task.trigger_type,
+                    "invocation_id": (launch_task.invocation_id),
+                    "invocation_type": launch_task.invocation_type,
                     "spider_name": launch_task.spider_name,
                     "params": Json(launch_task.params),
                     "target_period": datetime.fromisoformat(
@@ -69,9 +68,7 @@ class Repository:
         with Prisma() as db:
             db.completedspiderworkflowrun.create(
                 data={
-                    "workflow_execution_id": (
-                        completed_run.workflow_execution_id
-                    ),
+                    "invocation_id": completed_run.invocation_id,
                     "status": completed_run.status,
                     "completed_at": completed_run.completed_at,
                 }

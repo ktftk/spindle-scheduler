@@ -23,7 +23,8 @@ class MockWorkflowExecutor:
             target_period=spider_run_task.target_period,
             scheduled_at=spider_run_task.scheduled_at,
             invoked_at=datetime.now(timezone.utc),
-            workflow_execution_id=str(uuid.uuid4()),
+            invocation_id=str(uuid.uuid4()),
+            execution_id=str(uuid.uuid4()),
         )
 
 
@@ -48,8 +49,8 @@ def test_spider_run() -> None:
 
 def test_launched_spider_workflow_run() -> None:
     launched_run = LaunchSpiderWorkflowRun(
-        workflow_execution_id=str(uuid.uuid4()),
-        trigger_type="on_demand",
+        invocation_id=str(uuid.uuid4()),
+        invocation_type="on_demand",
         spider_name="test_spider",
         params={},
         target_period=datetime(2023, 6, 29).date(),
@@ -66,8 +67,8 @@ def test_launched_spider_workflow_run() -> None:
 
 def test_completed_spider_workflow_run() -> None:
     completed_run = CompleteSpiderWorkflowRun(
-        workflow_execution_id=str(uuid.uuid4()),
-        trigger_type="on_demand",
+        invocation_id=str(uuid.uuid4()),
+        invocation_type="on_demand",
         spider_name="test_spider",
         params={},
         target_period=datetime(2023, 6, 29).date(),

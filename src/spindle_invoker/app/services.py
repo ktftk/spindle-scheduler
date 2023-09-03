@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import os
-from datetime import date
+import uuid
+from datetime import date, datetime, timezone
 from typing import Literal, Optional
 
 from google.cloud.workflows import executions_v1
@@ -63,6 +64,7 @@ def execute_workflow(task: SpiderRunTask) -> InovkedSpiderRunTask:
         input_params=task.input_params,
         target_period=task.target_period,
         scheduled_at=task.scheduled_at,
-        invoked_at=task.scheduled_at,
-        workflow_execution_id=execiton_id,
+        invocation_id=str(uuid.uuid4()),
+        invoked_at=datetime.now(timezone.utc),
+        execution_id=execiton_id,
     )

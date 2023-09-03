@@ -25,28 +25,29 @@ model SpiderRunTask {
 }
 
 model InvokedSpiderRunTask {
-    hash                  String   @id
-    invoked_at            DateTime
-    workflow_execution_id String
+    hash          String   @id
+    invocation_id String
+    invoked_at    DateTime
+    execution_id  String
 
     @@map("invoked_spider_run_task")
 }
 
 model LaunchedSpiderWorkflowRun {
-    workflow_execution_id String   @id
-    trigger_type          String
-    spider_name           String
-    params                Json
-    target_period         DateTime @db.Date
-    launched_at           DateTime
+    invocation_id   String   @id
+    invocation_type String
+    spider_name     String
+    params          Json
+    target_period   DateTime @db.Date
+    launched_at     DateTime
 
     @@map("launched_spider_run_workflow")
 }
 
 model CompletedSpiderWorkflowRun {
-    workflow_execution_id String   @id
-    status                String
-    completed_at          DateTime
+    invocation_id String   @id
+    status        String
+    completed_at  DateTime
 
     @@map("completed_spider_workflow_run")
 }

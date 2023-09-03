@@ -1,7 +1,8 @@
+import uuid
 from datetime import date, datetime
 from typing import Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class SpiderRunTask(BaseModel):
@@ -18,13 +19,14 @@ class InovkedSpiderRunTask(BaseModel):
     input_params: Optional[dict]
     target_period: date
     scheduled_at: datetime
+    invocation_id: str
     invoked_at: datetime
-    workflow_execution_id: str
+    execution_id: str
 
 
 class LaunchSpiderWorkflowRun(BaseModel):
-    workflow_execution_id: str
-    trigger_type: Literal["on_demand", "on_release"]
+    invocation_id: str = Field(lambda: str(uuid.uuid4()))
+    invocation_type: Literal["on_demand", "on_release"]
     spider_name: str
     params: dict
     target_period: date
