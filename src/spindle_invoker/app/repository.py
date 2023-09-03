@@ -6,6 +6,7 @@ from prisma import Json, Prisma
 from .domains import (
     CompleteSpiderWorkflowRun,
     InovkedSpiderRunTask,
+    LaunchSpiderWorkflowRun,
     SpiderRunTask,
 )
 
@@ -43,6 +44,23 @@ class Repository:
                 }
             )
 
+    def write_launched_spider_workflow_run(
+        self, launch_task: LaunchSpiderWorkflowRun
+    ) -> None:
+        with Prisma() as db:
+            db.launchedspiderworkflowrun.create(
+                data={
+                    "workflow_execution_id": (
+                        launch_task.workflow_execution_id
+                    ),
+                    "trigger_type": launch_task.trigger_type,
+                    "spider_name": launch_task.spider_name,
+                    "params": Json(launch_task.params),
+                    "target_period": launch_task.target_period,  # type: ignore
+                    "launched_at": launch_task.launched_at,
+                }
+            )
+
     def write_completed_spider_workflow_run(
         self, completed_run: CompleteSpiderWorkflowRun
     ) -> None:
@@ -52,11 +70,7 @@ class Repository:
                     "workflow_execution_id": (
                         completed_run.workflow_execution_id
                     ),
-                    "trigger_type": completed_run.trigger_type,
                     "status": completed_run.status,
-                    "spider_name": completed_run.spider_name,
-                    "params": Json(completed_run.params),
-                    "target_period": completed_run.target_period,  # type: ignore # noqa: E501
                     "completed_at": completed_run.completed_at,
                 }
             )

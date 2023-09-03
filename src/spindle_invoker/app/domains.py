@@ -22,11 +22,15 @@ class InovkedSpiderRunTask(BaseModel):
     workflow_execution_id: str
 
 
-class CompleteSpiderWorkflowRun(BaseModel):
+class LaunchSpiderWorkflowRun(BaseModel):
     workflow_execution_id: str
     trigger_type: Literal["on_demand", "on_release"]
-    status: Literal["success", "failure"]
     spider_name: str
     params: dict
     target_period: date
+    launched_at: datetime
+
+
+class CompleteSpiderWorkflowRun(LaunchSpiderWorkflowRun):
+    status: Literal["success", "failure"]
     completed_at: datetime
