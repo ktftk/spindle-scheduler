@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from datetime import date
-from typing import Optional
+from typing import Literal, Optional
 
 from google.cloud.workflows import executions_v1
 from pydantic import BaseModel
@@ -11,6 +11,7 @@ from .domains import InovkedSpiderRunTask, SpiderRunTask
 
 
 class SpiderWorkflowPayload(BaseModel):
+    trigger_type: Literal["on_event"] = "on_event"
     spider_name: str
     params: Optional[dict]
     target_period: Optional[date]
