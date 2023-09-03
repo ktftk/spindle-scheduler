@@ -42,6 +42,7 @@ jobs:
       gcp-wi-sa: spindle-scheduler-ga@integry-prod-20230721.iam.gserviceaccount.com
       workflow-region: asia-northeast1
       workflow-name: spindle-workflow
+      env: prod
 
     secrets: inherit
 
@@ -65,5 +66,6 @@ jobs:
       gcs-raw-calendar-folder: raw
       gcs-parsed-calendar-folder: parsed
       gcs-latest-calendar-name: latest
+      
 
     secrets: inherit

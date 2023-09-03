@@ -1,5 +1,7 @@
 import os
 
+ENV = os.getenv("ENV", "dev")
+
 TASK_QUERY_START_OFFSET = int(
     os.getenv("TASK_QUERY_START_OFFSET", 60 * 60 * 24)
 )
