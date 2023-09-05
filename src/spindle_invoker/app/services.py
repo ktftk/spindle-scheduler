@@ -15,7 +15,7 @@ class SpiderWorkflowPayload(BaseModel):
     invocation_id: str
     invocation_type: Literal["release_based"] = "release_based"
     spider_name: str
-    params: Optional[dict]
+    params: dict
     target_period: Optional[date]
     scheduled_timestamp: float
 
@@ -26,7 +26,7 @@ class SpiderWorkflowPayload(BaseModel):
         return cls(
             invocation_id=str(uuid.uuid4()),
             spider_name=task.spider_name,
-            params=task.input_params,
+            params=task.input_params or {},
             target_period=task.target_period,
             scheduled_timestamp=task.scheduled_at.timestamp(),
         )
