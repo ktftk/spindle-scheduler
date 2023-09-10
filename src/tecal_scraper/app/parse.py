@@ -82,11 +82,19 @@ def is_quarterly_period(s: str) -> bool:
 
 
 def is_monthly_period(s: str) -> bool:
-    return len(s) == 3 or s == "APRIL"
+    return len(s) == 3 or s == "APRIL" or s == "SEPT"
 
 
 def is_weekly_period(s: str) -> bool:
     return re.match(r"^\w{3}/\d{2}$", s) is not None
+
+
+def parse_month(s: str) -> int:
+    if s == "SEPT":
+        return 9
+    if len(s) == 3:
+        return datetime.strptime(s, "%b").month
+    return datetime.strptime(s, "%B").month
 
 
 # Combination of "country_code", "event_name", "period"
@@ -119,11 +127,7 @@ def transform(df: pd.DataFrame, forward_date: date) -> pd.DataFrame:
         return pd.Period(str(date(start_year, start_month, 1)), freq="Q")
 
     def parse_monthly_period(s: str) -> pd.Period:
-        month = (
-            datetime.strptime(s, "%b").month
-            if len(s) == 3
-            else datetime.strptime(s, "%B").month
-        )
+        month = parse_month(s)
         year = month_to_year[month]
         return pd.Period(str(date(year, month, 1)), freq="M")
 
