@@ -1,9 +1,7 @@
 name: Test tecal scraper
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_call:
 
 jobs:
   test-tecal-scraper:
