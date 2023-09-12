@@ -2,11 +2,8 @@ name: Cloud Run Deploy in prod
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    tags:
+      - "v*"
 
 jobs:
   prisma-migrate-deploy:
@@ -66,6 +63,5 @@ jobs:
       gcs-raw-calendar-folder: raw
       gcs-parsed-calendar-folder: parsed
       gcs-latest-calendar-name: latest
-      
 
     secrets: inherit

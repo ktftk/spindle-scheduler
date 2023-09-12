@@ -1,0 +1,85 @@
+name: Cloud Run Deploy in dev
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-spindle-invoker:
+    name: Test Spindle Invoker
+
+    uses: ./.github/workflows/test-spindle-invoker.yml
+
+    secrets: inherit
+
+  test-tecal-scraper:
+    name: Test Tecal Scraper
+
+    uses: ./.github/workflows/test-tecal-scraper.yml
+
+    secrets: inherit
+
+  prisma-migrate-deploy:
+    name: Prisma migrate deploy
+
+    needs: [test-spindle-invoker]
+
+    uses: ./.github/workflows/prisma-migrate-deploy.yml
+
+    with:
+      environment: development
+      db-name: omnibus
+      db-schema: spindle_scheduler
+
+    secrets: inherit
+
+  deploy-spindle-invoker:
+    name: Deploy spindle-invoker
+
+    needs: [prisma-migrate-deploy]
+
+    uses: ./.github/workflows/spindle-invoker-deploy.yml
+
+    permissions:
+      contents: read
+      id-token: write
+
+    with:
+      cloud-run-sa: spindle-invoker@integry-dev-20230913.iam.gserviceaccount.com
+      cloud-sql-connection-name: integry-dev-20230913:asia-northeast1:fusion
+      docker-image-base-url: asia-northeast1-docker.pkg.dev/integry-dev-20230913/main/spindle-invoker
+      gar-hostname: asia-northeast1-docker.pkg.dev
+      gcp-project-id: integry-dev-20230913
+      gcp-wi-provider: projects/1077192786242/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+      gcp-wi-sa: spindle-scheduler-ga@integry-dev-20230913.iam.gserviceaccount.com
+      workflow-region: asia-northeast1
+      workflow-name: spindle-workflow
+      env: dev
+
+    secrets: inherit
+
+  deploy-tecal:
+    name: Deploy tecal
+
+    needs: [test-tecal-scraper]
+
+    uses: ./.github/workflows/tecal-scraper-deploy.yml
+
+    permissions:
+      contents: read
+      id-token: write
+
+    with:
+      cloud-run-sa: tecal-scraper@integry-dev-20230913.iam.gserviceaccount.com
+      docker-image-base-url: asia-northeast1-docker.pkg.dev/integry-dev-20230913/main/tecal-scraper
+      gar-hostname: asia-northeast1-docker.pkg.dev
+      gcp-project-id: integry-dev-20230913
+      gcp-wi-provider: projects/1077192786242/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+      gcp-wi-sa: spindle-scheduler-ga@integry-dev-20230913.iam.gserviceaccount.com
+      gcs-bucket: tecal-scraper-integry-dev-20230913
+      gcs-raw-calendar-folder: raw
+      gcs-parsed-calendar-folder: parsed
+      gcs-latest-calendar-name: latest
+
+    secrets: inherit

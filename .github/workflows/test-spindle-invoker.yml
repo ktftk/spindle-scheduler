@@ -1,9 +1,7 @@
 name: Test spindle invoker
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_call:
 
 jobs:
   test-spindle-invoker:
