@@ -60,21 +60,16 @@ def shutdown() -> None:
 def spider_workflow_run(
     repository: Annotated[Repository, Depends(Repository)],
     workflow_executor: Annotated[WorkflowExecutor, Depends(WorkflowExecutor)],
-    task_query: Annotated[TaskQuery, Body(embed=True)] = TaskQuery(),
+    task_query: Annotated[TaskQuery, Body(embed=True)],
 ) -> list[InovkedSpiderRunTask]:
     with tracer.start_as_current_span("spider_workflow_run") as span:
-        span.set_attribute(
-            "base_datetime", task_query.base_datetime.isoformat()
-        )
+        base_datetime = task_query.base_datetime
+        span.set_attribute("base_datetime", base_datetime.isoformat())
         span.set_attribute("start_offset", task_query.start_offset)
         span.set_attribute("end_offset", task_query.end_offset)
 
-        start = task_query.base_datetime - timedelta(
-            seconds=task_query.start_offset
-        )
-        end = task_query.base_datetime + timedelta(
-            seconds=task_query.end_offset
-        )
+        start = base_datetime - timedelta(seconds=task_query.start_offset)
+        end = base_datetime + timedelta(seconds=task_query.end_offset)
         span.set_attribute("start", start.isoformat())
         span.set_attribute("end", end.isoformat())
 
