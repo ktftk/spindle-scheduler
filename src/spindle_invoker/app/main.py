@@ -1,12 +1,12 @@
 import json
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Body, Depends, FastAPI
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from prisma import Prisma
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from .config import TASK_QUERY_END_OFFSET, TASK_QUERY_START_OFFSET
 from .domains import (
@@ -24,9 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class TaskQuery(BaseModel):
-    base_datetime: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
-    )
+    base_datetime: Optional[datetime] = None
     start_offset: int = TASK_QUERY_START_OFFSET
     end_offset: int = TASK_QUERY_END_OFFSET
 
@@ -63,7 +61,7 @@ def spider_workflow_run(
     task_query: Annotated[TaskQuery, Body(embed=True)],
 ) -> list[InovkedSpiderRunTask]:
     with tracer.start_as_current_span("spider_workflow_run") as span:
-        base_datetime = task_query.base_datetime
+        base_datetime = task_query.base_datetime or datetime.now(timezone.utc)
         span.set_attribute("base_datetime", base_datetime.isoformat())
         span.set_attribute("start_offset", task_query.start_offset)
         span.set_attribute("end_offset", task_query.end_offset)
