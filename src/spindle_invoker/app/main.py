@@ -58,7 +58,7 @@ def shutdown() -> None:
 def spider_workflow_run(
     repository: Annotated[Repository, Depends(Repository)],
     workflow_executor: Annotated[WorkflowExecutor, Depends(WorkflowExecutor)],
-    task_query: Annotated[TaskQuery, Body(embed=True)],
+    task_query: Annotated[TaskQuery, Body(embed=True)] = Depends(TaskQuery),
 ) -> list[InovkedSpiderRunTask]:
     with tracer.start_as_current_span("spider_workflow_run") as span:
         base_datetime = task_query.base_datetime or datetime.now(timezone.utc)
