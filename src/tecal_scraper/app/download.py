@@ -23,6 +23,8 @@ async def run(
     await page.locator("#te-c-all").get_by_text("United States").click()
     await page.locator("#te-c-all").get_by_text("China").click()
     await page.locator("#te-c-all").get_by_text("Japan").click()
+    await page.locator("#te-c-all").get_by_text("France").click()
+    await page.locator("#te-c-all").get_by_text("Germany").click()
     await page.get_by_text("Save").click()
 
     await page.wait_for_load_state(timeout=10000)
