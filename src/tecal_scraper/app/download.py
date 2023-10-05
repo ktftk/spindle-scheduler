@@ -29,7 +29,7 @@ async def run(
 
     await page.wait_for_load_state(timeout=10000)
 
-    await page.get_by_role("button", name=" Dates").click()
+    await page.get_by_role("button", name=" Recent").click()
     await page.get_by_role("menuitem", name=" Custom").click()
 
     await page.locator("#startDate").fill(start.isoformat())
