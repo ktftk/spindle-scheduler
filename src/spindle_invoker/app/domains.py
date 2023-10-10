@@ -28,7 +28,7 @@ class LaunchedSpiderWorkflowRun(BaseModel):
     invocation_type: Literal["on_demand", "release_based"]
     spider_name: str
     params: dict
-    target_period: date
+    target_period: Optional[date]
     launched_at: datetime
 
 

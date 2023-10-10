@@ -34,11 +34,11 @@ model InvokedSpiderRunTask {
 }
 
 model LaunchedSpiderWorkflowRun {
-    invocation_id   String   @id
+    invocation_id   String    @id
     invocation_type String
     spider_name     String
     params          Json
-    target_period   DateTime @db.Date
+    target_period   DateTime? @db.Date
     launched_at     DateTime
 
     @@map("launched_spider_run_workflow")
