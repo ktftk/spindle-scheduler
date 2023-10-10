@@ -57,7 +57,9 @@ class Repository:
                     "params": Json(launch_task.params),
                     "target_period": datetime.fromisoformat(
                         launch_task.target_period.isoformat()
-                    ),
+                    )
+                    if launch_task.target_period is not None
+                    else None,
                     "launched_at": launch_task.launched_at,
                 }
             )
