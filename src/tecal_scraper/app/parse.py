@@ -32,9 +32,7 @@ def parse_data_row(tr: bs4.element.Tag) -> dict:
     event_name = tr.get("data-event")
 
     time_span = tr.find("span", {"class": re.compile(r"^calendar-date-\d+$")})
-    time_str = (
-        time_span.get_text(strip=True) if time_span is not None else None
-    )
+    time_str = time_span.get_text(strip=True) if time_span is not None else None
 
     country_code_td = tr.find("td", {"class": "calendar-iso"})
     if country_code_td is None:
@@ -46,9 +44,7 @@ def parse_data_row(tr: bs4.element.Tag) -> dict:
 
     reference_span = tr.find("span", {"class": "calendar-reference"})
     period_str = (
-        reference_span.get_text(strip=True)
-        if reference_span is not None
-        else None
+        reference_span.get_text(strip=True) if reference_span is not None else None
     )
 
     return {
@@ -75,6 +71,10 @@ def extract(soup: BeautifulSoup) -> pd.DataFrame:
         elif is_data_row(tr):
             records.append(parse_data_row(tr))
     return pd.DataFrame(records)
+
+
+def is_yearly_period(s: str) -> bool:
+    return re.match(r"^\d{4}$", s) is not None
 
 
 def is_quarterly_period(s: str) -> bool:
@@ -121,6 +121,9 @@ def transform(df: pd.DataFrame, forward_date: date) -> pd.DataFrame:
         period = pd.Period(str(forward_date), freq="M") - i
         month_to_year[period.month] = period.year
 
+    def parse_yearly_period(s: str) -> pd.Period:
+        return pd.Period(str(date(int(s), 1, 1)), freq="Y")
+
     def parse_quarterly_period(s: str) -> pd.Period:
         start_month = (int(s[1]) - 1) * 3 + 1
         start_year = month_to_year[start_month]
@@ -147,6 +150,8 @@ def transform(df: pd.DataFrame, forward_date: date) -> pd.DataFrame:
             return parse_monthly_period(s)
         elif is_weekly_period(s):
             return parse_weekly_period(s)
+        elif is_yearly_period(s):
+            return parse_yearly_period(s)
         raise ValueError(f"invalid period: {s}")
 
     df["period"] = df[df["period_str"] != ""]["period_str"].apply(
